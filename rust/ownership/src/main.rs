@@ -37,6 +37,27 @@ fn main() {
     println!("{}", r3);
     
 
+    let mut s = String::from("Hello");
+
+    let word = first_word(&s); // word gets the value 5
+
+    s.clear(); // empties the sring ==> s = ""
+    //now word still has the value 5 but it doesn't relate to anything thus it is invalid!
+
+    let my_string = String::from("hello world");
+
+    // first_word works on slices of `String`s
+    let word = first_word(&my_string[..]);
+
+    let my_string_literal = "hello world";
+
+    // first_word works on slices of string literals
+    let word = first_word(&my_string_literal[..]);
+
+    // Because string literals *are* string slices already,
+    // this works too, without the slice syntax!
+    let word = first_word(my_string_literal);
+
 } // Here, x goes out of scope, then s. But because s's value was moved, nothing
   // special happens.
 
@@ -52,3 +73,15 @@ fn makes_copy(some_integer: i32) { // some_integer comes into scope
 fn calculate_length(s: &String) -> usize { //reference to a String
     s.len()
 }//s is now out of scope but since it's not the owner, nothinbg happens
+
+fn first_word(s: &str) -> &str {
+  let bytes = s.as_bytes();
+
+  for (i, &item) in bytes.iter().enumerate() {
+    if item == b' ' {
+      return &s[0..i];
+    }
+  }
+
+  &s[..]
+}
