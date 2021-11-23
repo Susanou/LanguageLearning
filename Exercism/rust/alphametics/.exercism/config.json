@@ -1,0 +1,37 @@
+{
+  "blurb": "Write a function to solve alphametics puzzles.",
+  "authors": [
+    "ijanos"
+  ],
+  "contributors": [
+    "Baelyk",
+    "ClashTheBunny",
+    "coriolinus",
+    "cwhakes",
+    "efx",
+    "ErikSchierboom",
+    "IanWhitney",
+    "lutostag",
+    "mkantor",
+    "navossoc",
+    "nfiles",
+    "nikamirrr",
+    "omer-g",
+    "petertseng",
+    "rofrol",
+    "stringparser",
+    "xakon",
+    "ZapAnton"
+  ],
+  "files": {
+    "solution": [
+      "src/lib.rs"
+    ],
+    "test": [
+      "tests/alphametics.rs"
+    ],
+    "example": [
+      ".meta/example.rs"
+    ]
+  }
+}
