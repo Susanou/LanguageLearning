@@ -1,0 +1,17 @@
+[
+{
+  "directory": "C:/Users/camer/Documents/GitHub/LanguageLearning/build",
+  "command": "C:\\MinGW\\bin\\mingw32-g++.exe   -g -Wall -Wextra -Wpedantic -Werror -std=c++1z -o CMakeFiles\\space-age.dir\\space_age_test.cpp.obj -c C:\\Users\\camer\\Documents\\GitHub\\LanguageLearning\\Exercism\\cpp\\space-age\\space_age_test.cpp",
+  "file": "C:/Users/camer/Documents/GitHub/LanguageLearning/Exercism/cpp/space-age/space_age_test.cpp"
+},
+{
+  "directory": "C:/Users/camer/Documents/GitHub/LanguageLearning/build",
+  "command": "C:\\MinGW\\bin\\mingw32-g++.exe   -g -Wall -Wextra -Wpedantic -Werror -std=c++1z -o CMakeFiles\\space-age.dir\\space_age.cpp.obj -c C:\\Users\\camer\\Documents\\GitHub\\LanguageLearning\\Exercism\\cpp\\space-age\\space_age.cpp",
+  "file": "C:/Users/camer/Documents/GitHub/LanguageLearning/Exercism/cpp/space-age/space_age.cpp"
+},
+{
+  "directory": "C:/Users/camer/Documents/GitHub/LanguageLearning/build",
+  "command": "C:\\MinGW\\bin\\mingw32-g++.exe   -g -Wall -Wextra -Wpedantic -Werror -std=c++1z -o CMakeFiles\\space-age.dir\\test\\tests-main.cpp.obj -c C:\\Users\\camer\\Documents\\GitHub\\LanguageLearning\\Exercism\\cpp\\space-age\\test\\tests-main.cpp",
+  "file": "C:/Users/camer/Documents/GitHub/LanguageLearning/Exercism/cpp/space-age/test/tests-main.cpp"
+}
+]
