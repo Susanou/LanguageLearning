@@ -1,0 +1,28 @@
+{
+  "blurb": "Determine if a sentence is a pangram.",
+  "authors": [
+    "Is0metry"
+  ],
+  "contributors": [
+    "elyashiv",
+    "jackhughesweb",
+    "KevinWMatthews",
+    "LegalizeAdulthood",
+    "patricksjackson"
+  ],
+  "files": {
+    "solution": [
+      "pangram.cpp",
+      "pangram.h"
+    ],
+    "test": [
+      "pangram_test.cpp"
+    ],
+    "example": [
+      ".meta/example.cpp",
+      ".meta/example.h"
+    ]
+  },
+  "source": "Wikipedia",
+  "source_url": "https://en.wikipedia.org/wiki/Pangram"
+}

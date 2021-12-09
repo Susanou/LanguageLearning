@@ -15,7 +15,7 @@ namespace triangle {
 		if (a > b + c) throw domain_error("Triangle inequality not respected");
 		if (c <= 0) throw domain_error("Number can't be equal or lower than 0");
 
-		if (a == b && b == c) return flavor::equilateral;
+		if (a == c) return flavor::equilateral;
 		if (a == b || b == c) return flavor::isosceles;
 		if (a == b + c) return flavor::degenerate;
 		else return flavor::scalene;
