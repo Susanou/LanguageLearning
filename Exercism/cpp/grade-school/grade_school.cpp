@@ -5,26 +5,21 @@
 #include <vector>
 #include <algorithm>
 
-using namespace std;
-
 namespace grade_school {
 
-	void school::add(string name, int i) {
-		if (students.find(i) != students.end()) {
-			students[i].push_back(name);
-			sort(students[i].begin(), students[i].end());
-		}
-		else {
-			students[i] = vector<string> { name };
-		}
+	void school::add(const std::string& name, int level) {
+		std::vector<std::string> &ref = students[level];
+
+		ref.insert(std::lower_bound(ref.begin(), ref.end(), name), name);
+
 	}
 
-	map<int, vector<string>> school::roster() const{
+	const std::map<int, std::vector<std::string>>& school::roster() const {
 		return students;
 	}
 
-	vector<string> school::grade(int i) const{
-		if (students.find(i) != students.end()) return students.at(i);
+	std::vector<std::string> school::grade(int level) const{
+		if (students.find(level) != students.end()) return students.at(level);
 		else return {};
 	}
 }  // namespace grade_school
