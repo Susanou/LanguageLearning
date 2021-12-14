@@ -15,7 +15,7 @@ TEST_CASE("queens_in_default_positions")
     REQUIRE(std::make_pair(7, 3).second == board.black().second);
 }
 
-#if defined(EXERCISM_RUN_ALL_TESTS)
+
 TEST_CASE("initialized_with_specific_positions")
 {
     const auto white = std::make_pair(3, 7);
@@ -34,6 +34,7 @@ TEST_CASE("queen_positions_must_be_distinct")
     REQUIRE_THROWS_AS((queen_attack::chess_board{pos, pos}), std::domain_error);
 }
 
+
 TEST_CASE("string_representation")
 {
     const queen_attack::chess_board board{std::make_pair(2, 4), std::make_pair(6, 6)};
@@ -49,6 +50,7 @@ TEST_CASE("string_representation")
         "_ _ _ _ _ _ _ _\n"};
     REQUIRE(expected == static_cast<std::string>(board));
 }
+
 
 TEST_CASE("queens_cannot_attack")
 {
@@ -105,4 +107,5 @@ TEST_CASE("queens_cannot_attack_if_not_on_same_row_column_or_diagonal")
 
     REQUIRE(!board.can_attack());
 }
+#if defined(EXERCISM_RUN_ALL_TESTS)
 #endif
