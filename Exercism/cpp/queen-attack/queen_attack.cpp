@@ -3,24 +3,26 @@
 #include <stdexcept>
 #include <cstdlib>
 
+using position = queen_attack::chess_board::position;
+
 namespace queen_attack {
 
 
-	chess_board::chess_board(std::pair<int, int> w, std::pair<int, int> b) {
-		if (w.first == b.first && w.second == b.second)
-			throw std::domain_error("Positions must be different");
+	//chess_board::chess_board(const position& w, const position& b) {
+	//	if (w == b)
+	//		throw std::domain_error("Positions must be different");
 
-		else {
-			white_pos = w;
-			black_pos = b;
-		}
-	}
 
-	const std::pair<int, int>& chess_board::white() const{
+	//	white_pos = w;
+	//	black_pos = b;
+
+	//}
+
+	const position& chess_board::white() const{
 		return white_pos;
 	}
 
-	const std::pair<int, int>& chess_board::black() const{
+	const position& chess_board::black() const{
 		return black_pos;
 	}
 
@@ -33,6 +35,7 @@ namespace queen_attack {
 	chess_board::operator std::string() const {
 
 		std::string board_str = "";
+		board_str.reserve(128);
 
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 8; j++) {
