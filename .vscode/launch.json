@@ -24,6 +24,16 @@
                     "ignoreFailures": true
                 }
             ]
+        },
+        {
+            "type": "cppvsdbg",
+            "request": "launch",
+            "name": "Rust Debug Launch",
+            "program": "${workspaceRoot}\\rust\\HandsOnRust\\dungeon_crawler\\target\\debug\\dungeon_crawler.exe",
+            "args": [],
+            "cwd": "${workspaceRoot}\\rust\\HandsOnRust\\dungeon_crawler\\target\\debug\\",
+            "sourceLanguages": ["rust"],
+            "stopAtEntry": false,
         }
     ]
 }
