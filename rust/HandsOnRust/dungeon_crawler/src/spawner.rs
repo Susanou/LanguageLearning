@@ -40,6 +40,19 @@ pub fn spawn_monster(
     );
 }
 
+pub fn spawn_amulet(ecs : &mut World, pos : Point){
+    ecs.push(
+        (Item, AmuletOfYala,
+            pos,
+            Render{
+                color: ColorPair::new(WHITE, BLACK),
+                glyph : to_cp437('|')
+            },
+            Name("Amulet of Yala".to_string())
+        )
+    );
+}
+
 fn goblin() -> (i32, String, FontCharType) {
     (1, "Goblin".to_string(), to_cp437('g'))
 }
