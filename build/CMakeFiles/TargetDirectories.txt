@@ -1,4 +1,0 @@
-C:/Users/camer/Documents/GitHub/LanguageLearning/build/CMakeFiles/space-age.dir
-C:/Users/camer/Documents/GitHub/LanguageLearning/build/CMakeFiles/test_space-age.dir
-C:/Users/camer/Documents/GitHub/LanguageLearning/build/CMakeFiles/edit_cache.dir
-C:/Users/camer/Documents/GitHub/LanguageLearning/build/CMakeFiles/rebuild_cache.dir
