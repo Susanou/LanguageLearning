@@ -1,0 +1,29 @@
+{
+  "blurb": "Compute the prime factors of a given natural number.",
+  "authors": [
+    "LegalizeAdulthood"
+  ],
+  "contributors": [
+    "cyborgsphinx",
+    "elyashiv",
+    "jackhughesweb",
+    "KevinWMatthews",
+    "kytrinyx",
+    "patricksjackson"
+  ],
+  "files": {
+    "solution": [
+      "prime_factors.cpp",
+      "prime_factors.h"
+    ],
+    "test": [
+      "prime_factors_test.cpp"
+    ],
+    "example": [
+      ".meta/example.cpp",
+      ".meta/example.h"
+    ]
+  },
+  "source": "The Prime Factors Kata by Uncle Bob",
+  "source_url": "http://butunclebob.com/ArticleS.UncleBob.ThePrimeFactorsKata"
+}

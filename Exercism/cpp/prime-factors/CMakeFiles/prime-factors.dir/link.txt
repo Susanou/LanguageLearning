@@ -1,0 +1,1 @@
+/usr/bin/c++ -g CMakeFiles/prime-factors.dir/prime_factors_test.cpp.o CMakeFiles/prime-factors.dir/prime_factors.cpp.o CMakeFiles/prime-factors.dir/test/tests-main.cpp.o -o prime-factors 
