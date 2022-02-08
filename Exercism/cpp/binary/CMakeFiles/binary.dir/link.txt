@@ -1,0 +1,1 @@
+/usr/bin/c++ -g CMakeFiles/binary.dir/binary_test.cpp.o CMakeFiles/binary.dir/binary.cpp.o CMakeFiles/binary.dir/test/tests-main.cpp.o -o binary 
