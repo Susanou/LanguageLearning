@@ -18,3 +18,5 @@ Cargo.lock
 **/build/
 **/test/
 **/CMakeFiles/
+
+**/packages
