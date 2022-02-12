@@ -35,18 +35,37 @@ int main()
 	// Vertices coordinates
 	GLfloat vertices[] =
 	{
-		-0.5f, -0.5f, // Lower left corner
-		0.5f, -0.5f, // Lower right corner
-		0.5f, 0.5f, // Upper Right corner
-		-0.5f, 0.5f, // Upper left corner
-		
-		//0.6f, -0.6f, // Lower right corner
-		//0.7f, 0.7f, // Upper corner
+		-0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f, // Lower left corner
+		0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f, // Lower right corner
+		0.0f, 0.5f * float(sqrt(3)) * 2 / 3, 0.0f, // Upper corner
+		-0.5f / 2, 0.5f * float(sqrt(3)) / 6, 0.0f, // Inner left
+		0.5f / 2, 0.5f * float(sqrt(3)) / 6, 0.0f, // Inner right
+		0.0f, -0.5f * float(sqrt(3)) / 3, 0.0f // Inner down
+	};
+
+	GLuint indicies[] =
+	{
+		0, 3, 5,
+		3, 2, 4,
+		5, 4, 1
+	};
+
+	//Square verticies coordinate and indicies
+	GLfloat s_vertices[] = {
+		-0.5f, -0.5f, 0.0f, // bottom left corner
+		-0.5f, 0.5f, 0.0f, // top left corner
+		0.5f, 0.5f, 0.0f, // top right corner
+		0.5f, -0.5f, 0.0f, // bottom right corner
+	};
+
+	GLuint s_indicies[] = {
+		0, 1, 2,
+		0, 2, 3
 	};
 
 
 	// Create a GLFWwindow object of 800 by 800 pixels, naming it "YoutubeOpenGL"
-	GLFWwindow* window = glfwCreateWindow(800, 800, "Triangle in window", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(800, 800, "Triforce in window", NULL, NULL);
 	// Error check if the window fails to create
 	if (window == NULL)
 	{
@@ -91,11 +110,12 @@ int main()
 
 
 	//Vertex Array Object & Vertex Buffer Object reference containers
-	GLuint VAOs[1], VBOs[1];
+	GLuint VAOs[1], VBOs[1], EBO;
 
 	//Only 1 object in each
 	glGenVertexArrays(1, VAOs);
 	glGenBuffers(1, VBOs);
+	glGenBuffers(1, &EBO);
 
 	//Make VAO the currect vertex array object
 	glBindVertexArray(VAOs[0]);
@@ -103,10 +123,13 @@ int main()
 	//Bind the VBO
 	glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
 	// Introduce the known verticies into the VBO
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(s_vertices), s_vertices, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(s_indicies), s_indicies, GL_STATIC_DRAW);
 
 	//configure the VAO so that opengl knows how to interpret the VBO
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	//Enable the VAO so that opengl can use it
 	glEnableVertexAttribArray(0);
 
@@ -114,6 +137,7 @@ int main()
 	//bind both the VBO and VAO to 0 so that they don't accidentaly modify them
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 
 
@@ -134,7 +158,7 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 		glUseProgram(shaderProgram);
 		glBindVertexArray(VAOs[0]);
-		glDrawArrays(GL_LINE_LOOP, 0, 4);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		glfwSwapBuffers(window);
 
 
@@ -148,6 +172,7 @@ int main()
 	glDeleteVertexArrays(1, VAOs);
 	glDeleteBuffers(1, VBOs);
 	glDeleteProgram(shaderProgram);
+	glDeleteBuffers(1, &EBO);
 
 
 
