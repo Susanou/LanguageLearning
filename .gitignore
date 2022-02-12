@@ -16,3 +16,4 @@ Cargo.lock
 **/.vs/
 
 **/build/
+**/test/
