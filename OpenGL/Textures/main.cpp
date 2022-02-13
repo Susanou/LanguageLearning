@@ -14,17 +14,17 @@
 // Vertices coordinates
 GLfloat vertices[] =
 { //     COORDINATES     /        COLORS      /   TexCoord  //
-	-0.5f, -0.5f, 0.0f,     1.0f, 0.0f, 0.0f,	0.0f, 0.0f, // Lower left corner
-	-0.5f,  0.5f, 0.0f,     0.0f, 1.0f, 0.0f,	0.0f, 1.0f, // Upper left corner
-	 0.5f,  0.5f, 0.0f,     0.0f, 0.0f, 1.0f,	1.0f, 1.0f, // Upper right corner
-	 0.5f, -0.5f, 0.0f,     1.0f, 1.0f, 1.0f,	1.0f, 0.0f  // Lower right corner
+	-0.5f, -0.5f, 0.0f,     1.0f, 0.0f, 0.0f,	-1.0f, -1.0f, // Lower left corner
+	0.0f,  0.5f, 0.0f,     0.0f, 1.0f, 0.0f,	0.5f, 2.0f, // Upper left corner
+	//0.5f,  0.5f, 0.0f,     0.0f, 0.0f, 1.0f,	3.0f, 3.0f, // Upper right corner
+	 0.5f, -0.5f, 0.0f,     1.0f, 1.0f, 1.0f,	2.0f, -1.0f  // Lower right corner
 };
 
 // Indices for vertices order
 GLuint indices[] =
 {
 	0, 2, 1, // Upper triangle
-	0, 3, 2 // Lower triangle
+	//0, 3, 2 // Lower triangle
 };
 
 
@@ -111,7 +111,7 @@ int main()
 		// Bind the VAO so OpenGL knows to use it
 		VAO1.Bind();
 		// Draw primitives, number of indices, datatype of indices, index of indices
-		glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 		// Swap the back buffer with the front buffer
 		glfwSwapBuffers(window);
 		// Take care of all GLFW events
