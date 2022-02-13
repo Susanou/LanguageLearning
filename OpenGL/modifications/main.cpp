@@ -77,8 +77,9 @@ int main()
 	// Generates Element Buffer Object and links it to indices
 	EBO EBO1(indices, sizeof(indices));
 
-	// Links VBO to VAO
-	VAO1.LinkVBO(VBO1, 0);
+	// Links VBO attributes such as coordinates and colors to VAO
+	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 3 * sizeof(float), (void*)0);
+
 	// Unbind all to prevent accidentally modifying them
 	VAO1.Unbind();
 	VBO1.Unbind();
