@@ -167,6 +167,7 @@
   <ItemGroup>
     <None Include="default.frag" />
     <None Include="default.vert" />
+    <None Include="glfw3.dll" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

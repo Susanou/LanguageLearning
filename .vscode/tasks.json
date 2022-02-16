@@ -7,13 +7,13 @@
             "args": [
                 "-g",
                 "-std=c++17",
-                "-I${workspaceFolder}\\OpenGL\\libraries\\include",
-                "-L${workspaceFolder}\\OpenGL\\libraries\\lib",
-                "${fileDirname}\\*.cpp",
-                "${fileDirname}\\glad.c",
+                "-I${workspaceFolder}/OpenGL/libraries/include",
+                "-L${workspaceFolder}/OpenGL/libraries/lib",
+                "${fileDirname}/*.cpp",
+                "${fileDirname}/glad.c",
                 "-lglfw3dll",
                 "-o",
-                "${fileDirname}\\${fileBasenameNoExtension}.exe"
+                "${fileDirname}/${fileBasenameNoExtension}.exe"
             ],
             "options": {
                 "cwd": "${fileDirname}"
@@ -34,9 +34,9 @@
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "${fileDirname}\\*.cpp",
+                "${fileDirname}/*.cpp",
                 "-o",
-                "${fileDirname}\\${fileBasenameNoExtension}.exe"
+                "${fileDirname}/${fileBasenameNoExtension}.exe"
             ],
             "options": {
                 "cwd": "${fileDirname}"

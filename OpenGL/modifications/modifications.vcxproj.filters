@@ -12,6 +12,12 @@
     <Filter Include="Resource Files">
       <UniqueIdentifier>{abaa2187-3f93-4fe5-8f6c-297c08b09a80}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Shaders">
+      <UniqueIdentifier>{727757c1-65c1-49e2-bcde-236382ac5fb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Textures">
+      <UniqueIdentifier>{a5c0de39-bf01-43d3-92a7-d14ac810c260}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -41,10 +47,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="default.vert">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="default.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="default.vert">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="glfw3.dll">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
