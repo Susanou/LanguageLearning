@@ -74,4 +74,12 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="pop_cat.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="brick.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+  </ItemGroup>
 </Project>
