@@ -45,11 +45,9 @@ impl State {
         spawn_player(&mut ecs, map_builder.player_start);
         spawn_amulet(&mut ecs, map_builder.amulet_start);
 
-        map_builder.rooms
+        map_builder.monster_spawns
             .iter()
-            .skip(1)
-            .map(|r| r.center())
-            .for_each(|pos| spawn_monster(&mut ecs, &mut rng, pos));
+            .for_each(|pos| spawn_monster(&mut ecs, &mut rng, *pos));
 
         resources.insert(map_builder.map);
         resources.insert(Camera::new(map_builder.player_start));
@@ -104,12 +102,14 @@ impl State {
         self.resources = Resources::default();
         let mut rng = RandomNumberGenerator::new();
         let map_builder = MapBuilder::new(&mut rng);
+
         spawn_player(&mut self.ecs, map_builder.player_start);
-        map_builder.rooms
+        spawn_amulet(&mut self.ecs, map_builder.amulet_start);
+
+        map_builder.monster_spawns
             .iter()
-            .skip(1)
-            .map(|r| r.center())
-            .for_each(|pos| spawn_monster(&mut self.ecs, &mut rng, pos));
+            .for_each(|pos| spawn_monster(&mut self.ecs, &mut rng, *pos));
+
         self.resources.insert(map_builder.map);
         self.resources.insert(Camera::new(map_builder.player_start));
         self.resources.insert(TurnState::AwaitingInput);
@@ -155,10 +155,12 @@ impl GameState for State {
 }
 
 fn main() -> BError{
+
+
     let context = BTermBuilder::new()
         .with_title("Dungeon Crawler")
         .with_fps_cap(30.0)
-        .with_dimensions(80,60)
+        .with_dimensions(160,120)
         .with_resource_path("resources/")
         .with_font("dungeonfont.png", 32, 32)
         .with_font("terminal8x8.png", 8, 8)
