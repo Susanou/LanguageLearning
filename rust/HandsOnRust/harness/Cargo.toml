@@ -9,3 +9,4 @@ edition = "2018"
 [dependencies]
 bracket-lib = "~0.8.1"
 colored = "2"
+crossterm = "0.23"

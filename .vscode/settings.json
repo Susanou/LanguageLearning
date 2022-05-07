@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "${workspaceFolder}/Exercism/cpp/space-age"
+    "cmake.sourceDirectory": "${workspaceFolder}/Exercism/cpp/space-age",
+    "cmake.configureOnOpen": false
 }

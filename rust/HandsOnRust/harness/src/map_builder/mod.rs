@@ -1,4 +1,6 @@
 use crate::prelude::*;
+use std::{thread, time};
+
 mod empty;
 use empty::EmptyArchitect;
 mod rooms;
@@ -92,8 +94,12 @@ pub fn display(title: &str, map: &Map, player_start: &Point, amulet_start: &Poin
         println!("");
     }
 
+    thread::sleep(time::Duration::from_millis(1000));
+
+    /*
     let mut ignore_me = String::new();
     stdin()
         .read_line(&mut ignore_me)
         .expect("Failed to read line");
+        */
 }
