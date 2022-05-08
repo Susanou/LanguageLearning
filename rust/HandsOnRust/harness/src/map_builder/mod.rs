@@ -7,6 +7,8 @@ mod rooms;
 use rooms::RoomsArchitect;
 mod automata;
 use automata::CellularAutomataArchitect;
+mod drunkard;
+use drunkard::DrunkardsWalkArchitect;
 
 trait MapArchitect {
     fn new(&mut self, rng: &mut RandomNumberGenerator) -> MapBuilder;
@@ -21,7 +23,7 @@ pub struct MapBuilder {
 
 #[allow(dead_code)]
 pub enum Algorithm{
-    Empty, Cellular, Rooms
+    Empty, Cellular, Rooms, Drunkard
 }
 
 impl MapBuilder {
@@ -30,6 +32,7 @@ impl MapBuilder {
             Algorithm::Empty => Box::new(EmptyArchitect{}),
             Algorithm::Cellular => Box::new(CellularAutomataArchitect::new()),
             Algorithm::Rooms => Box::new(RoomsArchitect::new()),
+            Algorithm::Drunkard => Box::new(DrunkardsWalkArchitect::new())
         };
         let mut mb = architect.new(rng);
         mb
@@ -63,7 +66,7 @@ impl MapBuilder {
 
 pub fn display(title: &str, map: &Map, player_start: &Point, amulet_start: &Point, monster_spawns: &[Point]) {
     use colored::*;
-    use std::io::stdin;
+    //use std::io::stdin;
     let mut output = vec!['.'; NUM_TILES];
 
     map.tiles.iter().enumerate().for_each(|(idx, t)| {
@@ -79,7 +82,7 @@ pub fn display(title: &str, map: &Map, player_start: &Point, amulet_start: &Poin
         output[map.point2d_to_index(*p)] = 'M';
     });
 
-    print!("\x1B[2J");
+    //print!("\x1B[2J");
     println!("----------------------\n{}\n----------------------", title.bright_yellow());
     for y in 0..SCREEN_HEIGHT {
         for x in 0..SCREEN_WIDTH {

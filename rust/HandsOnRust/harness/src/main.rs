@@ -13,6 +13,6 @@ mod prelude {
 fn main() {
     use crate::prelude::*;
     let mut rng = RandomNumberGenerator::new();
-    let mb = MapBuilder::build(&mut rng, Algorithm::Cellular);
+    let mb = MapBuilder::build(&mut rng, Algorithm::Drunkard);
     display("Final Map", &mb.map, &mb.player_start, &mb.amulet_start, &mb.monster_spawns);
 }
