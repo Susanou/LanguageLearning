@@ -4,6 +4,8 @@ use winit::{
     window::{Window, WindowBuilder},
 };
 
+use wgpu::include_wgsl;
+
 #[cfg(target_arch="wasm32")]
 use wasm_bindgen::prelude::*;
 
@@ -13,6 +15,9 @@ struct State {
     queue: wgpu::Queue,
     config: wgpu::SurfaceConfiguration,
     size: winit::dpi::PhysicalSize<u32>,
+    render_pipeline: wgpu::RenderPipeline,
+    use_color: bool,
+    challenge_render_pipeline: wgpu::RenderPipeline
 }
 
 impl State {
@@ -63,12 +68,119 @@ impl State {
         };
         surface.configure(&device, &config);
 
+        let shader = device.create_shader_module(wgpu::ShaderModuleDescriptor{
+            label: Some("Shader"),
+            source: wgpu::ShaderSource::Wgsl(include_str!("shader.wgsl").into()), // include_wgsl!() is a macro also available
+        });
+
+        let render_pipeline_layout = 
+            device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
+                label: Some("Render Pipeline Layout"),
+                bind_group_layouts: &[],
+                push_constant_ranges: &[]
+            });
+
+        let render_pipeline = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
+            label: Some("Render Pipeline"),
+            layout: Some(&render_pipeline_layout),
+            vertex: wgpu::VertexState {
+                module: &shader,
+                entry_point: "vs_main", // function to enter from (tagged with @vertex or @fragment)
+                buffers: &[], // verticies to pass to the vertex shader
+            },
+            fragment: Some(wgpu::FragmentState { //usually optional thus the Some(). Needed for the color data for the surface
+                module: &shader,
+                entry_point: "fs_main",
+                targets: &[Some(wgpu::ColorTargetState { // tells wgpu what colors to setup
+                    format: config.format,
+                    blend: Some(wgpu::BlendState {
+                        color: wgpu::BlendComponent::REPLACE,
+                        alpha: wgpu::BlendComponent::REPLACE,
+                    }),
+                    write_mask: wgpu::ColorWrites::ALL,
+                })],
+            }),
+            primitive: wgpu::PrimitiveState {
+                topology: wgpu::PrimitiveTopology::TriangleList, // 3 verticies = 1 triangle
+                strip_index_format: None,
+                front_face: wgpu::FrontFace::Ccw, // tells in which order the verticies are counted in order to make the shape face forward
+                cull_mode: Some(wgpu::Face::Back),
+                // Setting this to anything other than Fill requires Features::POLYGON_MODE_LINE
+                // or Features::POLYGON_MODE_POINT
+                polygon_mode: wgpu::PolygonMode::Fill,
+                // Requires Features::DEPTH_CLIP_CONTROL
+                unclipped_depth: false,
+                // Requires Features::CONSERVATIVE_RASTERIZATION
+                conservative: false,
+            },
+            depth_stencil: None,
+            multisample: wgpu::MultisampleState {
+                count: 1, // how many samples the pipeline will use (beginner => stay at 1)
+                mask: !0, // specifies which samples are active. In our case all of them
+                alpha_to_coverage_enabled: false, // anti-aliasing stuff for later
+            },
+            // If the pipeline will be used with a multiview render pass, this
+            // indicates how many array layers the attachments will have.
+            multiview: None,
+        });
+
+        let shader = device.create_shader_module(include_wgsl!("challenge.wgsl"));
+
+        let challenge_render_pipeline = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
+            label: Some("Challenge Render Pipeline"),
+            layout: Some(&render_pipeline_layout),
+            vertex: wgpu::VertexState {
+                module: &shader,
+                entry_point: "vs_main", // function to enter from (tagged with @vertex or @fragment)
+                buffers: &[], // verticies to pass to the vertex shader
+            },
+            fragment: Some(wgpu::FragmentState { //usually optional thus the Some(). Needed for the color data for the surface
+                module: &shader,
+                entry_point: "fs_main",
+                targets: &[Some(wgpu::ColorTargetState { // tells wgpu what colors to setup
+                    format: config.format,
+                    blend: Some(wgpu::BlendState {
+                        color: wgpu::BlendComponent::REPLACE,
+                        alpha: wgpu::BlendComponent::REPLACE,
+                    }),
+                    write_mask: wgpu::ColorWrites::ALL,
+                })],
+            }),
+            primitive: wgpu::PrimitiveState {
+                topology: wgpu::PrimitiveTopology::TriangleList, // 3 verticies = 1 triangle
+                strip_index_format: None,
+                front_face: wgpu::FrontFace::Ccw, // tells in which order the verticies are counted in order to make the shape face forward
+                cull_mode: Some(wgpu::Face::Back),
+                // Setting this to anything other than Fill requires Features::POLYGON_MODE_LINE
+                // or Features::POLYGON_MODE_POINT
+                polygon_mode: wgpu::PolygonMode::Fill,
+                // Requires Features::DEPTH_CLIP_CONTROL
+                unclipped_depth: false,
+                // Requires Features::CONSERVATIVE_RASTERIZATION
+                conservative: false,
+            },
+            depth_stencil: None,
+            multisample: wgpu::MultisampleState {
+                count: 1, // how many samples the pipeline will use (beginner => stay at 1)
+                mask: !0, // specifies which samples are active. In our case all of them
+                alpha_to_coverage_enabled: false, // anti-aliasing stuff for later
+            },
+            // If the pipeline will be used with a multiview render pass, this
+            // indicates how many array layers the attachments will have.
+            multiview: None,
+        });
+
+        let use_color = true;
+
         Self {
             surface,
             device,
             queue,
             config,
             size,
+            render_pipeline,
+            challenge_render_pipeline,
+            use_color
         }
     }
 
@@ -81,8 +193,22 @@ impl State {
         }
     }
 
-    fn input(&mut self, _event: &WindowEvent) -> bool {
-        false
+    fn input(&mut self, event: &WindowEvent) -> bool {
+        match event{
+            WindowEvent::KeyboardInput { 
+                input:
+                    KeyboardInput{
+                        state,
+                        virtual_keycode: Some(VirtualKeyCode::Space),
+                        ..
+                    },
+                    ..
+             } => {
+                self.use_color = *state == ElementState::Released;
+                true
+             }
+             _ => false,
+        }
     }
 
     fn update(&mut self) {
@@ -98,7 +224,7 @@ impl State {
         });
 
         {
-            let _render_pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
+            let mut render_pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
                 label: Some("Render Pass"),
                 color_attachments: &[Some(wgpu::RenderPassColorAttachment {
                     view: &view,
@@ -115,6 +241,13 @@ impl State {
                 })],
                 depth_stencil_attachment: None,
             });
+
+            render_pass.set_pipeline(if self.use_color{
+                &self.render_pipeline
+            }else{
+                &self.challenge_render_pipeline
+            });
+            render_pass.draw(0..3, 0..1);
         }
 
         self.queue.submit(std::iter::once(encoder.finish()));
@@ -211,4 +344,8 @@ pub async fn run() {
             _ => {}
         }
     });
+}
+
+fn main() {
+    pollster::block_on(run());
 }

@@ -1,5 +1,5 @@
 [package]
-name = "surface"
+name = "buffers"
 version = "0.1.0"
 edition = "2021"
 
@@ -20,18 +20,18 @@ pollster = "0.2"
 console_error_panic_hook = "0.1.6"
 console_log = "0.2.0"
 wgpu = { version = "0.13", features = ["webgl"]}
-wasm-bindgen = "0.2.76"
-wasm-bindgen-futures = "0.4.30"
-web-sys = { version = "0.3.53", features = [
+wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4"
+web-sys = { version = "0.3", features = [
     "Document",
     "Window",
     "Element",
 ]}
 
 [[bin]]
-name = "Surface"
+name = "buffers"
 path = "src/main.rs"
 
 [[bin]]
-name = "Challenge"
+name = "challenge"
 path = "src/challenge.rs"

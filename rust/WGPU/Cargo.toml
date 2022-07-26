@@ -2,6 +2,7 @@
 resolver = "2"
 members = [
     "window",
-    "Surface",
-    "Pipeline"
+    "surface",
+    "pipeline",
+    "buffers"
 ]
