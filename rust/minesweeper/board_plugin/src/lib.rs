@@ -15,6 +15,7 @@ use bounds::Bounds2;
 use bevy::log;
 use bevy::prelude::*;
 use bevy::math::Vec3Swizzles;
+use bevy::utils::{HashSet, HashMap};
 
 #[cfg(feature = "debug")]
 //use bevy_inspector_egui::RegisterInspectable;
@@ -69,6 +70,9 @@ impl BoardPlugin {
         #[cfg(feature = "debug")]
         log::info!("{}", tile_map.console_output());
 
+        let mut covered_tiles = 
+            HashMap::with_capacity((tile_map.width() * tile_map.height()).into());
+
         let tile_size = match options.tile_size {
             TileSize::Fixed(v) => v,
             TileSize::Adaptative { min, max } => Self::adaptivate_tile_size(
@@ -120,6 +124,8 @@ impl BoardPlugin {
                         Color::GRAY,
                         bomb_image,
                         font,
+                        Color::DARK_GRAY,
+                        &mut covered_tiles
                     );
             });
         
@@ -131,6 +137,7 @@ impl BoardPlugin {
                 size: board_size,
             },
             tile_size,
+            covered_tiles,
         });
     }
 
@@ -187,6 +194,8 @@ impl BoardPlugin {
         color: Color,
         bomb_image: Handle<Image>,
         font: Handle<Font>,
+        covered_tile_color: Color,
+        covered_tiles: &mut HashMap<Coordinates, Entity>,
     ) {
         // Tiles
         for (y, line) in tile_map.iter().enumerate() {
@@ -211,6 +220,22 @@ impl BoardPlugin {
                 })
                 .insert(Name::new(format!("Tile ({}, {})", x, y)))
                 .insert(coordinates);
+
+                cmd.with_children(|parent| {
+                    let entity = parent
+                        .spawn_bundle(SpriteBundle {
+                            sprite: Sprite {
+                                custom_size: Some(Vec2::splat(size - padding)),
+                                color: covered_tile_color,
+                                ..Default::default()
+                            },
+                            transform: Transform::from_xyz(0., 0., 2.),
+                            ..Default::default()
+                        })
+                        .insert(Name::new("Tile Cover"))
+                        .id();
+                    covered_tiles.insert(coordinates, entity);
+                });
 
                 match tile {
                     // If the tile is a bomb we add the matching component and a sprite child
