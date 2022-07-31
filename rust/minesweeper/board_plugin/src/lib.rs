@@ -6,21 +6,29 @@ use resources::TileSize;
 use resources::BoardPosition;
 use resources::tile::Tile;
 use resources::tile_map::TileMap;
+use resources::Board;
 
 use components::*;
 
+use bounds::Bounds2;
+
 use bevy::log;
 use bevy::prelude::*;
+use bevy::math::Vec3Swizzles;
 
 #[cfg(feature = "debug")]
 //use bevy_inspector_egui::RegisterInspectable;
 use bevy_inspector_egui::InspectableRegistry;
 
+mod bounds;
+mod systems;
+
 pub struct BoardPlugin;
 
 impl Plugin for BoardPlugin {
     fn build(&self, app: &mut App) {
-        app.add_startup_system(Self::create_board);
+        app.add_startup_system(Self::create_board)
+            .add_system(systems::input::input_handling);
 
         #[cfg(feature = "debug")]
         {
@@ -114,6 +122,16 @@ impl BoardPlugin {
                         font,
                     );
             });
+        
+        // We add the main resource of the game, the board
+        commands.insert_resource(Board {
+            tile_map,
+            bounds: Bounds2 {
+                position: board_position.xy(),
+                size: board_size,
+            },
+            tile_size,
+        });
     }
 
     fn adaptivate_tile_size(

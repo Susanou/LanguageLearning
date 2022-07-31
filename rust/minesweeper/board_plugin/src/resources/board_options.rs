@@ -1,8 +1,6 @@
 use bevy::prelude::Vec3;
 use serde::{Deserialize, Serialize};
 
-use super::tile::Tile;
-
 /// Tile size options
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum TileSize {
