@@ -12,6 +12,8 @@ use components::*;
 
 use bounds::Bounds2;
 
+use crate::events::*;
+
 use bevy::log;
 use bevy::prelude::*;
 use bevy::math::Vec3Swizzles;
@@ -23,13 +25,17 @@ use bevy_inspector_egui::InspectableRegistry;
 
 mod bounds;
 mod systems;
+mod events;
 
 pub struct BoardPlugin;
 
 impl Plugin for BoardPlugin {
     fn build(&self, app: &mut App) {
         app.add_startup_system(Self::create_board)
-            .add_system(systems::input::input_handling);
+            .add_system(systems::input::input_handling)
+            .add_system(systems::uncover::trigger_event_handler)
+            .add_system(systems::uncover::uncover_tiles)
+            .add_event::<TileTriggerEvent>();
 
         #[cfg(feature = "debug")]
         {
