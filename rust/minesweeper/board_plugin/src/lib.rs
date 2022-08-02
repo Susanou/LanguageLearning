@@ -48,13 +48,17 @@ impl<T: StateData> Plugin for BoardPlugin<T> {
         // We handle uncovering even if the state is inactive
         .add_system_set(
             SystemSet::on_in_stack_update(self.running_state.clone())
-                .with_system(systems::uncover::uncover_tiles),
+                .with_system(systems::uncover::uncover_tiles)
+                .with_system(systems::mark::mark_tiles),
         )
         .add_system_set(
             SystemSet::on_exit(self.running_state.clone())
                 .with_system(Self::cleanup_board),
         )
-        .add_event::<TileTriggerEvent>();
+        .add_event::<TileTriggerEvent>()
+        .add_event::<TileMarkEvent>()
+        .add_event::<BombExplosionEvent>()
+        .add_event::<BoardCompletedEvent>();
 
         #[cfg(feature = "debug")]
         {
@@ -162,6 +166,7 @@ impl<T> BoardPlugin<T> {
             tile_size,
             covered_tiles,
             entity: board_entity,
+            marked_tiles: Vec::new(),
         });
 
         if options.safe_start {
