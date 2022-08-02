@@ -64,10 +64,12 @@ fn state_handler(mut state: ResMut<State<AppState>>, keys: Res<Input<KeyCode>>) 
     }
     if keys.just_pressed(KeyCode::G) {
         log::debug!("loading detected");
-        if state.current() == &AppState::Out {
+        /* if state.current() == &AppState::Out {
             log::info!("loading game");
             state.set(AppState::InGame).unwrap();
-        }
+        } */
+
+        state.restart().unwrap(); // generates the board again without having to clear
     }
     if keys.just_pressed(KeyCode::Escape) {
         log::debug!("Pausing detected");
