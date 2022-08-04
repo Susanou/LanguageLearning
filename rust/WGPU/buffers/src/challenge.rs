@@ -1,4 +1,4 @@
-use std::iter;
+use std::{iter, f32::consts::PI};
 
 use wgpu::util::DeviceExt;
 use winit::{
@@ -55,12 +55,20 @@ struct State {
     device: wgpu::Device,
     queue: wgpu::Queue,
     config: wgpu::SurfaceConfiguration,
+
     size: winit::dpi::PhysicalSize<u32>,
+
     render_pipeline: wgpu::RenderPipeline,
+    
     vertex_buffer: wgpu::Buffer,
     index_buffer: wgpu::Buffer,
     num_indices: u32,
 
+    challenge_vertex_buffer: wgpu::Buffer,
+    challenge_index_buffer: wgpu::Buffer,
+    challenge_num_indices: u32,
+
+    use_challenge: bool,
 }
 
 impl State {
@@ -189,6 +197,45 @@ impl State {
         //let num_vertices = VERTICES.len() as u32;
         let num_indices = INDICES.len() as u32;
 
+        let challenge_num_vericies = 50;
+        let angle = 2. * PI / challenge_num_vericies as f32;
+
+        let challenge_verts = (0..challenge_num_vericies)
+            .map(|i| {
+                let theta = angle*i as f32;
+                Vertex {
+                    position: [0.5*theta.cos(), -0.5*theta.sin(), 0.0],
+                    color: [(1.0 + theta.cos()) / 2.0, (1.0 + theta.sin()) / 2.0, 1.0]
+                }
+            })
+            .collect::<Vec<_>>();
+
+        let num_triangle = challenge_num_vericies - 2;
+        let challenge_indices = (1u16..num_triangle + 1) //drawing a circle so skip the first one where we would have to use the same vertex twice
+            .into_iter()
+            .flat_map(|i| vec![i+1, i, 0])
+            .collect::<Vec<_>>();
+
+        let challenge_num_indices = challenge_indices.len() as u32;
+
+        let challenge_vertex_buffer = device.create_buffer_init(
+            &wgpu::util::BufferInitDescriptor {
+                label: Some("Vertex Buffer"),
+                contents: bytemuck::cast_slice(&challenge_verts),
+                usage: wgpu::BufferUsages::VERTEX,
+            }
+        );
+
+        let challenge_index_buffer = device.create_buffer_init(
+            &wgpu::util::BufferInitDescriptor {
+                label: Some("Index Buffer"),
+                contents: bytemuck::cast_slice(&challenge_indices),
+                usage: wgpu::BufferUsages::INDEX,
+            }
+        );
+
+        let use_challenge = false;
+
         Self {
             surface,
             device,
@@ -199,6 +246,10 @@ impl State {
             vertex_buffer,
             index_buffer,
             num_indices,
+            challenge_vertex_buffer,
+            challenge_index_buffer,
+            challenge_num_indices,
+            use_challenge,
         }
     }
 
@@ -211,8 +262,22 @@ impl State {
         }
     }
 
-    fn input(&mut self, _event: &WindowEvent) -> bool {
-        false
+    fn input(&mut self, event: &WindowEvent) -> bool {
+        match event{
+            WindowEvent::KeyboardInput { 
+                input:
+                    KeyboardInput{
+                        state,
+                        virtual_keycode: Some(VirtualKeyCode::Space),
+                        ..
+                    },
+                    ..
+             } => {
+                self.use_challenge = *state == ElementState::Released;
+                true
+             }
+             _ => false,
+        }
     }
 
     fn update(&mut self) {
@@ -246,10 +311,25 @@ impl State {
                 depth_stencil_attachment: None,
             });
 
+            let data = if self.use_challenge {
+                (
+                    &self.challenge_vertex_buffer,
+                    &self.challenge_index_buffer,
+                    self.challenge_num_indices
+                )
+            } else {
+                (
+                    &self.vertex_buffer,
+                    &self.index_buffer,
+                    self.num_indices,
+                )
+            };
+
             render_pass.set_pipeline(&self.render_pipeline);
-            render_pass.set_vertex_buffer(0, self.vertex_buffer.slice(..));
-            render_pass.set_index_buffer(self.index_buffer.slice(..), wgpu::IndexFormat::Uint16);
-            render_pass.draw_indexed(0..self.num_indices, 0, 0..1);
+
+            render_pass.set_vertex_buffer(0, data.0.slice(..));
+            render_pass.set_index_buffer(data.1.slice(..), wgpu::IndexFormat::Uint16);
+            render_pass.draw_indexed(0..data.2, 0, 0..1);
         }
 
         self.queue.submit(std::iter::once(encoder.finish()));
@@ -346,4 +426,8 @@ pub async fn run() {
             _ => {}
         }
     });
+}
+
+fn main() {
+    pollster::block_on(run());
 }
