@@ -4,5 +4,6 @@ members = [
     "window",
     "surface",
     "pipeline",
-    "buffers"
+    "buffers",
+    "textures",
 ]
