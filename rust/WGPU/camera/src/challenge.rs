@@ -98,6 +98,27 @@ impl Camera {
     }
 }
 
+struct CameraStaging {
+    camera: Camera,
+    model_rotation: cgmath::Deg<f32>,
+}
+
+impl CameraStaging {
+    fn new(camera: Camera) -> Self {
+        Self{
+            camera,
+            model_rotation: cgmath::Deg(0.0)
+        }
+    }
+
+    fn update_camera(&self, camera_uniform: &mut CameraUniform) {
+        camera_uniform.view_proj = (OPENGL_TO_WGPU_MATRIX
+            * self.camera.build_view_projection_matrix()
+            * cgmath::Matrix4::from_angle_z(self.model_rotation))
+        .into();
+    }
+}
+
 //needed for Rust to store the data correvtly
 #[repr(C)]
 // all of this is needed so we can store the data in a buffer
@@ -234,7 +255,7 @@ struct State {
     diffuse_bind_group: wgpu::BindGroup,
     #[allow(dead_code)]
     diffuse_texture: texture::Texture,
-    camera: Camera,
+    camera_staging: CameraStaging,
     camera_controller: CameraController,
     camera_uniform: CameraUniform,
     camera_buffer: wgpu::Buffer,
@@ -386,6 +407,9 @@ impl State {
         });
 
         let camera_controller = CameraController::new(0.2);
+        
+        let camera_staging = CameraStaging::new(camera);
+        camera_staging.update_camera(&mut camera_uniform);
 
         let shader = device.create_shader_module(wgpu::ShaderModuleDescriptor{
             label: Some("Shader"),
@@ -482,7 +506,7 @@ impl State {
             num_indices,
             diffuse_bind_group,
             diffuse_texture,
-            camera,
+            camera_staging,
             camera_controller,
             camera_uniform,
             camera_buffer,
@@ -504,9 +528,12 @@ impl State {
     }
 
     fn update(&mut self) {
-        self.camera_controller.update_camera(&mut self.camera);
-    self.camera_uniform.update_view_proj(&self.camera);
-    self.queue.write_buffer(&self.camera_buffer, 0, bytemuck::cast_slice(&[self.camera_uniform]));
+        self.camera_controller.update_camera(&mut self.camera_staging.camera);
+
+        self.camera_staging.model_rotation += cgmath::Deg(2.0);
+        self.camera_staging.update_camera(&mut self.camera_uniform);
+
+        self.queue.write_buffer(&self.camera_buffer, 0, bytemuck::cast_slice(&[self.camera_uniform]));
     }
 
     fn render(&mut self) -> Result<(), wgpu::SurfaceError> {
