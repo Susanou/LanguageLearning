@@ -89,15 +89,22 @@ struct Camera {
 
 impl Camera {
     fn build_view_projection_matrix(&self) -> cgmath::Matrix4<f32> {
+        //world position and rotation of the camera ( = transform ^ -1)
+
         let view = cgmath::Matrix4::look_at_rh(self.eye, self.target, self.up);
+        //matriux to give depth feel 
         let proj = cgmath::perspective(cgmath::Deg(self.fovy), self.aspect, self.znear, self.zfar);
         proj * view
     }
 }
 
+//needed for Rust to store the data correvtly
 #[repr(C)]
+// all of this is needed so we can store the data in a buffer
 #[derive(Debug, Copy, Clone, bytemuck::Pod, bytemuck::Zeroable)]
 struct CameraUniform {
+    // since we can't use cgmath with bytemuck,
+    // store a Matrix4 in a 4x4 array
     view_proj: [[f32; 4]; 4],
 }
 
