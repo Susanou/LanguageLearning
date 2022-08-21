@@ -7,4 +7,5 @@ members = [
     "buffers",
     "textures",
     "camera",
+    "instancing"
 ]
