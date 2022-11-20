@@ -131,11 +131,45 @@ fn color_squares(
     }
 }
 
+fn select_square(
+    mut events: EventReader<PickingEvent>,
+    mouse_button_inputs: Res<Input<MouseButton>>,
+    mut selected_square: ResMut<SelectedSquare>,
+    squares_query: Query<&Square>,
+) {
+
+    if !mouse_button_inputs.just_pressed(MouseButton::Left){
+        return;
+    }
+
+    for event in events.iter() {
+        match event {
+            PickingEvent::Selection(e) => {
+                if let SelectionEvent::JustSelected(selected_entity) = e {
+                    if let Ok(_current_square) = squares_query.get(*selected_entity) {
+                        info!("Selecting square: {}", selected_entity.id());
+                        selected_square.entity = Some(*selected_entity);
+                    }
+                    else{
+                        // we selected nothing
+                        info!("Deselecting");
+                        selected_square.entity = None;
+                        break;
+                    };
+                }
+            },
+            _ => {},
+        }
+    }
+
+}
+
 pub struct BoardPlugin;
 impl Plugin for BoardPlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<SelectedSquare>()
             .add_startup_system(create_board)
-            .add_system(color_squares);
+            .add_system(color_squares)
+            .add_system_to_stage(CoreStage::PostUpdate, select_square);
     }
 }
