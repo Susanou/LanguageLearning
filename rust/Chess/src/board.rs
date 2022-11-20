@@ -72,33 +72,62 @@ fn color_squares(
     mut selected_square: ResMut<SelectedSquare>,
     mut materials: ResMut<Assets<StandardMaterial>>,
     query: Query<(Entity, &Square, &Handle<StandardMaterial>)>,
-) {
-
-    let mut top_entity = None;
-
-    // Get entity under the cursor when there is one
+)
+{
+    // Helpful:
+    //  Get entity from Event: https://stackoverflow.com/a/72260406
+    //  bevy_mod_picking event example: https://github.com/aevyrie/bevy_mod_picking/blob/main/examples/events.rs
+    //  bevy_picking doc: https://docs.rs/bevy_mod_picking/latest/bevy_mod_picking/index.html
     for event in events.iter() {
         match event {
-            PickingEvent::Hover(HoverEvent::JustEntered(e)) => top_entity = Some(*e),
-            PickingEvent::Clicked(e) => selected_square.entity = Some(*e),
-            _ => {},
-        };
-    }
+            PickingEvent::Hover(e) => {
+                /*  Example of USE:
+                     if let HoverEvent::JustEntered(ent) = e {
+                         info!("ID of entity: {}", ent.id());
+                         for (entity, square, handled) in query.iter() {
+                             if entity == *ent {
+                                 info!("\t=>Found !")
+                             }
+                         }
+                     }
+                */
+                info!("color_squares:: Event: {:?}", e);
 
-    for (entity, square, material_handle) in query.iter() {
-        // Get the actual material
-        let material = materials.get_mut(material_handle).unwrap();
+                let (HoverEvent::JustEntered(hovered_entity) |
+                HoverEvent::JustLeft(hovered_entity)) = e;
 
-        //change the color of the material
-        material.base_color = if Some(entity) == top_entity {
-            Color::rgb(0.5, 0.9, 0.5)
-        } else if Some(entity) == selected_square.entity {
-            Color::rgb(0.9, 0.1, 0.1)
-        } else if square.is_white() {
-            Color::rgb(1., 0.9, 0.9)
-        } else {
-            Color::rgb(0., 0.1, 0.1)
-        };
+                let (entity, square, material_handle) = query.get(*hovered_entity).unwrap();
+
+                if selected_square.entity == Some(entity) {
+                    // I added it first to always see the selected square, in blue
+                    let material = materials.get_mut(material_handle).unwrap();
+                    material.base_color = Color::rgb(0.9, 0.1, 0.9);
+
+
+                } else if let HoverEvent::JustEntered(hovered_entity) = e {
+                    if *hovered_entity == entity {
+                        let material = materials.get_mut(material_handle).unwrap();
+                        info!("Just Entered Entity: {}", entity.id());
+                        material.base_color = Color::rgb(0.8, 0.3, 0.3);
+                    }
+
+                } else if let HoverEvent::JustLeft(hovered_entity) = e {
+                    if *hovered_entity == entity {
+                        let material = materials.get_mut(material_handle).unwrap();
+                        material.base_color = if square.is_white() {
+                            info!("Just Left entity: {} which was white", entity.id());
+                            Color::rgb(1., 0.9, 0.9)
+                        } else {
+                            info!("Just Left entity: {} which was black", entity.id());
+                            Color::rgb(0., 0.1, 0.1)
+                        };
+                    }
+                }
+
+                info!("\n");
+            }
+            _ => {}
+        }
     }
 }
 
