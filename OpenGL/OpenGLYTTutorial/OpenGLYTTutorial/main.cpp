@@ -59,12 +59,14 @@ int main()
 
 	// Enables the Depth Buffer
 	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
 
 	// Creates camera object
 	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
 
 	// Load in a model
-	Model model("models/bunny/scene.gltf");
+	Model ground("models/ground/scene.gltf");
+	Model trees("models/trees/scene.gltf");
 
 	// Original code from the tutorial
 	// Model model("models/bunny/scene.gltf");
@@ -83,7 +85,8 @@ int main()
 		camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
 		// Draw a model
-		model.Draw(shaderProgram, camera);
+		ground.Draw(shaderProgram, camera);
+		trees.Draw(shaderProgram, camera);
 
 		// Swap the back buffer with the front buffer
 		glfwSwapBuffers(window);
